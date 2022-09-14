@@ -1,0 +1,77 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forms</title>
+ </head>
+ <body>
+    <h2>This is HTML forms tutorial</h2>
+    <form action="backend.php">
+        <label for="name">Name :</label>
+        <div>
+             <input type="text" name="myName" id="name">   
+        </div>
+        <br>
+        <label for="role">Role :</label>
+        <div>
+             <input type="text" name="myRole" id="role">
+        </div>
+        <br>
+        <label for="mail">Email : </label>
+        <div>
+           <input type="email" name="myEmail" id="mail">
+        </div>
+        <br>
+        <label for="dob">DOB :</label>
+        <div>
+             <input type="date" name="myDOB" id="dob">
+        </div>
+        <br>
+        <label for="age">Age :</label>
+        <div>
+             <input type="number" name="myAge" id="age">
+        </div>
+        <br>
+        <label for="eligibility">Are you eligible :</label>
+        <div>
+             <input type="checkbox" name="myEligibility" id="eligibility">
+            <!--** use checked for keeping a checkbox or radiobutton checked by default**
+            Are you eligible : <input type="checkbox" name="myEligibility" checked>
+            -->
+        </div>
+        <br>
+        <label for="gender">Gender :</label>
+        <div>
+             Male <input type="radio" name="myGender" id="gender">
+             Female <input type="radio" name="myGender" id="gender">
+             Others <input type="radio" name="myGender" id="gender">
+        </div>
+        <br>
+        <div>
+            Write about yourself :
+            <br>
+            <textarea name="myTextArea"  cols="60" rows="10"></textarea>
+        </div>
+        <br>
+        <div>
+            <label for="car">Select Car :</label>
+            <select name="myCar" id="car">
+                <option value="ind">Indica</option>
+                <option value="swf">Swift</option>
+                <option value="kwid">Kwid</option>
+                <!--** use selected for keeping a car selected by default**
+                <option value="kwid" selected>Kwid</option >
+                -->
+                
+            </select>
+        </div>
+        <br>
+        <div>
+            <input type="submit" value="Submit Now">
+            <input type="reset" value="Reset Now">
+        </div>
+    </form>
+ </body>
+ </html>
