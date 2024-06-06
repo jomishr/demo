@@ -1,0 +1,2091 @@
+swagger: '2.0'
+info:
+  version: '0.2.2'
+  title: Team Dev Frontend Server API
+  description: ''
+  contact: {}
+host: team-dev-frontend-server.herokuapp.com
+basePath: /
+securityDefinitions: {}
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /users:
+    post:
+      description: Create new user
+      summary: createUser
+      tags:
+      - user
+      operationId: createUser
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: Authorization
+        in: header
+        required: false
+        default: Bearer {token}
+        type: string
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: User registration details
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        '201':
+          description: Created
+          schema:
+            $ref: '#/definitions/CreatedUser'
+          headers: {}
+    get:
+      description: ''
+      summary: getAllUsers
+      tags:
+      - user
+      operationId: getAllUsers
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: firstName
+        in: query
+        required: false
+        type: string
+        description: Search all users by first name if provided (case-sensitive and exact string matches only)
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AllUsers'
+          headers: {}
+        '400':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '404':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /login:
+    post:
+      description: ''
+      summary: loginUser
+      tags:
+      - user
+      operationId: loginUser
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: Authorization
+        in: header
+        required: false
+        default: Bearer {token}
+        type: string
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: User login information
+        schema:
+          $ref: '#/definitions/login'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/loginRes'
+          headers: {}
+        '400':
+          description: Invalid username/password supplied
+          headers: {}
+  /users/{id}:
+    get:
+      description: ''
+      summary: getUserByID
+      tags:
+      - user
+      operationId: getUserByID
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: The name that needs to be fetched. Use user1 for testing.
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/UsersResponse'
+          headers: {}
+        '400':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '404':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+    patch:
+      description: Only users with a TEACHER role can call this endpoint.
+      summary: userUpdateCohort
+      tags:
+      - user
+      operationId: userUpdateCohort
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: The user id that needs to be updated
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: Cohort Id to add user to
+        schema:
+          $ref: '#/definitions/UsersRequest'
+      responses:
+        '201':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/CohortAddUser'
+          headers: {}
+        '401':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /users/update/{id}:
+    patch:
+      description: Updates the profile of this user. Only teachers can update cohortId or role. Users with Students role can only update their own profile.
+      summary: userUpdate
+      tags:
+      - user
+      operationId: userUpdate
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: The user id that needs to be updated
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: The profile info
+        schema:
+          $ref: '#/definitions/UpdateUser'
+      responses:
+        '201':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/User'
+          headers: {}
+        '401':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /posts:
+    post:
+      description: This can only be done by the logged in user.
+      summary: createPost
+      tags:
+      - post
+      operationId: createPost
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: Created post object
+        schema:
+          $ref: '#/definitions/editPost'
+      responses:
+        '201':
+          description: success
+          schema:
+            $ref: '#/definitions/Post'
+          headers: {}
+        '400':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+    get:
+      description: get all posts
+      summary: getPosts
+      tags:
+      - post
+      operationId: getPosts
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/Posts'
+          headers: {}
+        '401':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /posts/postLike:
+    get:
+      description: get all post likes
+      summary: getPostLikes
+      tags:
+      - post
+      operationId: getPostLikes
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/AllPostLikes'
+          headers: {}
+        '401':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /posts/{id}/postLike:
+    post:
+      description: This can only be done by the logged in user.
+      summary: likePost
+      tags:
+      - post
+      operationId: likePost
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: The id of the post that is being liked.
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: Like (or not) a post
+        schema:
+          $ref: '#/definitions/PostsPostLikeRequest'
+      responses:
+        '201':
+          description: success
+          schema:
+            $ref: '#/definitions/PostLike'
+          headers: {}
+        '404':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '409':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /posts/{id}:
+    patch:
+      description: edit post by id
+      summary: editPost
+      tags:
+      - post
+      operationId: editPost
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: The id of the post that is being edited.
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: content to edit
+        schema:
+          $ref: '#/definitions/editPost'
+      responses:
+        '201':
+          description: successful
+          headers: {}
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '401':
+          description: Unauthorised
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+    delete:
+      description: delete post by id
+      summary: deletePost
+      tags:
+      - post
+      operationId: deletePost
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: get post by its id
+      responses:
+        '201':
+          description: successful
+          schema:
+            $ref: '#/definitions/DeletePost'
+          headers: {}
+        '401':
+          description: authentication failed
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '500':
+          description: error creating comment
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /cohorts:
+    get:
+      description: ''
+      summary: getAllCohorts
+      tags:
+      - cohort
+      operationId: getAllCohorts
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        '200':
+          description: success
+          schema:
+            $ref: '#/definitions/AllCohorts'
+          headers: {}
+        '400':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '404':
+          description: fail
+          headers: {}
+      security: []
+    post:
+      description: This can only be done by the logged in user with role TEACHER.
+      summary: createCohort
+      tags:
+      - cohort
+      operationId: createCohort
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: Cohort details
+        schema:
+          $ref: '#/definitions/CohortsRequest'
+      responses:
+        '201':
+          description: success
+          schema:
+            $ref: '#/definitions/CreatedCohort'
+          headers: {}
+        '400':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /logs:
+    post:
+      description: This can only be done by authorised teacher user.
+      summary: createLog
+      tags:
+      - log
+      operationId: createLog
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: Created log object
+        schema:
+          $ref: '#/definitions/LogsRequest'
+      responses:
+        '201':
+          description: success
+          schema:
+            $ref: '#/definitions/Log'
+          headers: {}
+        '401':
+          description: Unauthorised
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /notes/{studentId}:
+    post:
+      description: This can only be done by a logged in TEACHER.
+      summary: createNote
+      tags:
+      - note
+      operationId: createNote
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: studentId
+        in: path
+        required: true
+        type: integer
+        format: int32
+        description: ''
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: Created note object
+        schema:
+          $ref: '#/definitions/editPost'
+      responses:
+        '201':
+          description: success
+          schema:
+            $ref: '#/definitions/Note'
+          headers: {}
+        '400':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+    get:
+      description: get all notes
+      summary: getNotes
+      tags:
+      - note
+      operationId: getNotes
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: studentId
+        in: path
+        required: true
+        type: string
+        description: ''
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/AllNotes'
+          headers: {}
+        '401':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /notes/{id}/:
+    patch:
+      description: edit bote by id
+      summary: editNote
+      tags:
+      - note
+      operationId: editNote
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: The id of the note that is being edited.
+      responses:
+        '201':
+          description: successful
+          headers: {}
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '401':
+          description: Unauthorised
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+    delete:
+      description: delete note by id
+      summary: deleteNote
+      tags:
+      - note
+      operationId: deleteNote
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: get note by its id
+      responses:
+        '201':
+          description: successful
+          schema:
+            $ref: '#/definitions/DeleteNote'
+          headers: {}
+        '401':
+          description: authentication failed
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '500':
+          description: error deleting Note
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /conversations:
+    post:
+      description: This can only be done by a logged in user
+      summary: createConversation
+      tags:
+      - conversation
+      operationId: createConversation
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: Created conversation object
+        schema:
+          $ref: '#/definitions/ConversationsRequest'
+      responses:
+        '201':
+          description: success
+          schema:
+            $ref: '#/definitions/Conversation'
+          headers: {}
+        '400':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+    get:
+      description: get all conversations
+      summary: getConversations
+      tags:
+      - conversation
+      operationId: getConversations
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/Conversation'
+          headers: {}
+        '401':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /conversations/{id}/:
+    get:
+      description: ''
+      summary: getConversationByUserID
+      tags:
+      - conversation
+      operationId: getConversationByUserID
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: The id of the user for which we need to fetch conversations
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Conversation'
+          headers: {}
+        '400':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '404':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /exercises:
+    post:
+      description: Create new exercise
+      summary: createExercise
+      tags:
+      - exercise
+      operationId: createExercise
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: Exercise details
+        schema:
+          $ref: '#/definitions/CreateExercise'
+      responses:
+        '201':
+          description: Created
+          schema:
+            $ref: '#/definitions/Exercise'
+          headers: {}
+      security: []
+    get:
+      description: ''
+      summary: getAllExercises
+      tags:
+      - exercise
+      operationId: getAllExercises
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/AllExercises'
+          headers: {}
+        '400':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '404':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /exercises/{id}:
+    get:
+      description: ''
+      summary: getExerciseByID
+      tags:
+      - exercise
+      operationId: getExerciseByID
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: The exercise id that needs to be fetched.
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ExercisesResponse'
+          headers: {}
+        '400':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '404':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /exercises/{id}/cohortExercises:
+    post:
+      description: Create new cohort exercise
+      summary: createCohortExercise
+      tags:
+      - exercise
+      operationId: createCohortExercise
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        format: int32
+        description: The cohort id for which an exercise needs assigning
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: Cohort exercise details
+        schema:
+          $ref: '#/definitions/ExercisesCohortExercisesRequest'
+      responses:
+        '201':
+          description: Created
+          schema:
+            $ref: '#/definitions/ExercisesCohortExercisesResponse'
+          headers: {}
+      security: []
+    get:
+      description: ''
+      summary: getExercisesByCohortID
+      tags:
+      - exercise
+      operationId: getExercisesByCohortID
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: The cohort id for which exercises are fetched
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ExercisesCohortExercisesResponse1'
+          headers: {}
+        '400':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '404':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /posts/{id}/comment:
+    post:
+      description: comment a post by id
+      summary: commentPost
+      tags:
+      - comment
+      operationId: commentPost
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+        format: int32
+        description: get post by its id
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: Created post object
+        schema:
+          $ref: '#/definitions/editPost'
+      responses:
+        '201':
+          description: successful
+          schema:
+            $ref: '#/definitions/Comment'
+          headers: {}
+        '400':
+          description: bad request
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '401':
+          description: Unauthorised
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /posts/{postId}/comment/{commentId}:
+    delete:
+      description: by a logged in user who owns the post or the comment, or with the role of TEACHER
+      summary: deleteComment
+      tags:
+      - comment
+      operationId: deleteComment
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: postId
+        in: path
+        required: true
+        type: integer
+        format: int32
+        description: id of the post which has the comment to delete
+      - name: commentId
+        in: path
+        required: true
+        type: integer
+        format: int32
+        description: id of the comment to delete
+      responses:
+        '201':
+          description: successful
+          schema:
+            $ref: '#/definitions/DeletePost'
+          headers: {}
+        '401':
+          description: Unauthorised
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+    patch:
+      description: by a logged in user who owns the comment
+      summary: editComment
+      tags:
+      - comment
+      operationId: editComment
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: postId
+        in: path
+        required: true
+        type: integer
+        format: int32
+        description: id of the post which has the comment to delete
+      - name: commentId
+        in: path
+        required: true
+        type: integer
+        format: int32
+        description: id of the comment to delete
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: content to edit
+        schema:
+          $ref: '#/definitions/editComment'
+      responses:
+        '201':
+          description: successful
+          schema:
+            $ref: '#/definitions/Comment'
+          headers: {}
+        '400':
+          description: missing content
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '401':
+          description: Unauthorised
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /posts/commentLike:
+    get:
+      description: get all comment likes
+      summary: getCommentLikes
+      tags:
+      - comment
+      operationId: getCommentLikes
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/AllCommentLikes'
+          headers: {}
+        '401':
+          description: fail
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+  /posts/{postId}/comment/{commentId}/commentLike:
+    post:
+      description: This can be done by any logged in user.
+      summary: likeComment
+      tags:
+      - comment
+      operationId: likeComment
+      deprecated: false
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: postId
+        in: path
+        required: true
+        type: integer
+        format: int32
+        description: ''
+      - name: commentId
+        in: path
+        required: true
+        type: integer
+        format: int32
+        description: ''
+      - name: Content-Type
+        in: header
+        required: false
+        enum:
+        - application/json
+        type: string
+        description: ''
+      - name: body
+        in: body
+        required: false
+        description: Like (or not) a post
+        schema:
+          $ref: '#/definitions/PostsCommentCommentLikeRequest'
+      responses:
+        '201':
+          description: successful
+          schema:
+            $ref: '#/definitions/PostsCommentCommentLikeResponse'
+          headers: {}
+        '401':
+          description: Unauthorised
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '500':
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+    delete:
+      description: This can be done by a logged in user who liked a particular comment
+      summary: deleteCommentLike
+      tags:
+      - comment
+      operationId: deleteCommentLike
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: postId
+        in: path
+        required: true
+        type: integer
+        format: int32
+        description: ''
+      - name: commentId
+        in: path
+        required: true
+        type: integer
+        format: int32
+        description: ''
+      responses:
+        '201':
+          description: successful
+          schema:
+            $ref: '#/definitions/PostsCommentCommentLikeResponse1'
+          headers: {}
+        '401':
+          description: Unauthorised
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+        '500':
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/Error'
+          headers: {}
+      security: []
+definitions:
+  Post:
+    title: Post
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data'
+  DeletePost:
+    title: DeletePost
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data1'
+  AllPostLikes:
+    title: AllPostLikes
+    type: object
+    properties:
+      status:security: {}
+      data:
+        $ref: '#/definitions/Data2'
+  PostLike:
+    title: PostLike
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      userId:
+        type: integer
+        format: int64
+      postId:
+        type: integer
+        format: int64
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+      active:
+        type: boolean
+  AllCommentLikes:
+    title: AllCommentLikes
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data3'
+  CommentLike:
+    title: CommentLike
+    type: object
+    properties:
+      userId:
+        type: integer
+        format: int64
+      commentId:
+        type: integer
+        format: int64
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+      active:
+        type: boolean
+  AllCohorts:
+    title: AllCohorts
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Cohort'
+  Cohort:
+    title: Cohort
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      cohortName:
+        type: string
+      startDate:
+        type: string
+      endDate:
+        type: string
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+  Comment:
+    title: Comment
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data4'
+  editPost:
+    title: editPost
+    type: object
+    properties:
+      content:
+        type: string
+  editComment:
+    title: editComment
+    type: object
+    properties:
+      content:
+        type: string
+  AllUsers:
+    title: AllUsers
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data5'
+  User:
+    title: User
+    type: object
+    properties:
+      role:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      biography:
+        type: string
+      githubUrl:
+        type: string
+      profileUrl:
+        type: string
+      password:
+        type: string
+  UpdateUser:
+    title: UpdateUser
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      cohortId:
+        type: integer
+        format: int32
+      role:
+        type: string
+      profile:
+        $ref: '#/definitions/Profile1'
+  Posts:
+    title: Posts
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/Data6'
+  CreatedCohort:
+    title: CreatedCohort
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data7'
+  CohortAddUser:
+    title: CohortAddUser
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data8'
+  CreatedUser:
+    title: CreatedUser
+    type: object
+    properties:
+      status:
+        example: success
+        type: string
+      data:
+        $ref: '#/definitions/Data9'
+  login:
+    title: login
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+  loginRes:
+    title: loginRes
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data10'
+  AllNotes:
+    title: AllNotes
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data11'
+  Note:
+    title: Note
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      content:
+        type: string
+      teacherId:
+        type: integer
+        format: int32
+      studentId:
+        type: integer
+        format: int32
+      isEdited:
+        type: boolean
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+  DeleteNote:
+    title: DeleteNote
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data12'
+  Conversation:
+    title: Conversation
+    type: object
+    properties:
+      userIds:
+        type: integer
+        format: int32
+      name:
+        type: string
+  Error:
+    title: Error
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data13'
+  Log:
+    title: Log
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data14'
+  AllExercises:
+    title: AllExercises
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data5'
+  Exercise:
+    title: Exercise
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      exerciseName:
+        type: string
+      githubUrl:
+        type: string
+      unitId:
+        type: integer
+        format: int32
+  CreateExercise:
+    title: CreateExercise
+    type: object
+    properties:
+      exerciseName:
+        type: string
+      githubUrl:
+        type: string
+      unitId:
+        type: integer
+        format: int32
+  Author:
+    title: Author
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      firstName:
+        type: string
+      lastName:
+        type: string
+  Cohort1:
+    title: Cohort1
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      cohortName:
+        type: string
+      startDate:
+        type: string
+      endDate:
+        type: string
+  CohortExercise:
+    title: CohortExercise
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      exerciseId:
+        type: integer
+        format: int32
+      cohortId:
+        type: integer
+        format: int32
+  CohortsRequest:
+    title: CohortsRequest
+    type: object
+    properties:
+      cohortName:
+        type: string
+      startDate:
+        type: string
+      endDate:
+        type: string
+  Comment1:
+    title: Comment1
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      content:
+        type: string
+      userId:
+        type: integer
+        format: int64
+      postId:
+        type: integer
+        format: int32
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/User2'
+      likes:
+        type: array
+        items:
+          $ref: '#/definitions/Like'
+  ConversationsRequest:
+    title: ConversationsRequest
+    type: object
+    properties:
+      content: {}
+  Data:
+    title: Data
+    type: object
+    properties:
+      post:
+        $ref: '#/definitions/Post1'
+  Data1:
+    title: Data1
+    type: object
+    properties:
+      deletedPost:
+        $ref: '#/definitions/DeletedPost'
+      deletedComments:
+        $ref: '#/definitions/DeletedComments'
+  Data2:
+    title: Data2
+    type: object
+    properties:
+      postLikes:
+        type: array
+        items:
+          $ref: '#/definitions/PostLike'
+  Data3:
+    title: Data3
+    type: object
+    properties:
+      postLikes:
+        type: array
+        items:
+          $ref: '#/definitions/CommentLike'
+  Data4:
+    title: Data4
+    type: object
+    properties:
+      post:
+        $ref: '#/definitions/Post2'
+  Data5:
+    title: Data5
+    type: object
+    properties:
+      users:
+        type: array
+        items:
+          $ref: '#/definitions/User'
+  Data6:
+    title: Data6
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      content:
+        type: string
+      userId:
+        type: integer
+        format: int32
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/User2'
+      likes:
+        type: array
+        items:
+          $ref: '#/definitions/Like'
+      comments:
+        type: array
+        items:
+          $ref: '#/definitions/Comment1'
+  Data7:
+    title: Data7
+    type: object
+    properties:
+      cohort:
+        $ref: '#/definitions/Cohort1'
+  Data8:
+    title: Data8
+    type: object
+    properties:
+      user:
+        $ref: '#/definitions/User6'
+  Data9:
+    title: Data9
+    type: object
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/User7'
+  Data10:
+    title: Data10
+    type: object
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/User8'
+  Data11:
+    title: Data11
+    type: object
+    properties:
+      notes:
+        type: array
+        items:
+          $ref: '#/definitions/Note'
+  Data12:
+    title: Data12
+    type: object
+    properties:
+      deletedNote:
+        $ref: '#/definitions/DeletedNote'
+  Data13:
+    title: Data13
+    type: object
+    properties:
+      error:
+        type: string
+  Data14:
+    title: Data14
+    type: object
+    properties:
+      log:
+        $ref: '#/definitions/Log1'
+  Data16:
+    title: Data16
+    type: object
+    properties:
+      user:
+        $ref: '#/definitions/User'
+  Data17:
+    title: Data17
+    type: object
+    properties:
+      like:
+        $ref: '#/definitions/CommentLike'
+  Data18:
+    title: Data18
+    type: object
+    properties:
+      like:
+        $ref: '#/definitions/Like2'
+  Data19:
+    title: Data19
+    type: object
+    properties:
+      exercise:
+        $ref: '#/definitions/Exercise'
+  Data20:
+    title: Data20
+    type: object
+    properties:
+      cohortExercise:
+        type: array
+        items:
+          $ref: '#/definitions/CohortExercise'
+  DeletedComments:
+    title: DeletedComments
+    type: object
+    properties:
+      count:
+        type: integer
+        format: int32
+  DeletedNote:
+    title: DeletedNote
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      content:
+        type: string
+      teacherId:
+        type: integer
+        format: int32
+      studentId:
+        type: integer
+        format: int32
+  DeletedPost:
+    title: DeletedPost
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      content:
+        type: string
+      userId:
+        type: integer
+        format: int64
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+  ExercisesCohortExercisesRequest:
+    title: ExercisesCohortExercisesRequest
+    type: object
+    properties:
+      exerciseId:
+        type: integer
+        format: int32
+  ExercisesCohortExercisesResponse:
+    title: ExercisesCohortExercisesResponse
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      exerciseId:
+        type: integer
+        format: int32
+      cohortId:
+        type: integer
+        format: int32
+  ExercisesCohortExercisesResponse1:
+    title: ExercisesCohortExercisesResponse1
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data20'
+  ExercisesResponse:
+    title: ExercisesResponse
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data19'
+  Like:
+    title: Like
+    type: object
+    properties:
+      userId:
+        type: integer
+        format: int64
+      postId:
+        type: integer
+        format: int32
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/User2'
+  Like2:
+    title: Like2
+    type: object
+    properties:
+      userId:
+        example: 1
+        type: integer
+        format: int32
+      commentId:
+        example: 1
+        type: integer
+        format: int32
+  Line:
+    title: Line
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      content:
+        type: string
+  Log1:
+    title: Log1
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      cohortId:
+        type: integer
+        format: int32
+      date:
+        type: string
+      author:
+        $ref: '#/definitions/Author'
+      lines:
+        type: array
+        items:
+          $ref: '#/definitions/Line'
+  LogsRequest:
+    title: LogsRequest
+    type: object
+    properties:
+      date:
+        type: string
+      cohortId:
+        type: integer
+        format: int32
+      lines:
+        type: array
+        items:
+          $ref: '#/definitions/editPost'
+  Post1:
+    title: Post1
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      content:
+        type: string
+  Post2:
+    title: Post2
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      content:
+        type: string
+      userId:
+        type: integer
+        format: int32
+      postId:
+        type: integer
+        format: int32
+      parentId:
+        type: integer
+        format: int32
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/User2'
+  PostsCommentCommentLikeRequest:
+    title: PostsCommentCommentLikeRequest
+    type: object
+    properties:
+      active:
+        type: boolean
+      commentLikeId:
+        type: integer
+        format: int32
+  PostsCommentCommentLikeResponse:
+    title: PostsCommentCommentLikeResponse
+    type: object
+    properties:
+      status:
+        example: success
+        type: string
+      data:
+        $ref: '#/definitions/Data17'
+  PostsCommentCommentLikeResponse1:
+    title: PostsCommentCommentLikeResponse1
+    type: object
+    properties:
+      status:
+        example: success
+        type: string
+      data:
+        $ref: '#/definitions/Data18'
+  PostsPostLikeRequest:
+    title: PostsPostLikeRequest
+    type: object
+    properties:
+      active:
+        type: boolean
+      postLikeId:
+        type: integer
+        format: int32
+  Profile:
+    title: Profile
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      userId:
+        type: integer
+        format: int32
+      firstName:
+        type: string
+      lastName:
+        type: string
+      bio:
+        type: string
+      githubUrl:
+        type: string
+      profileImageUrl:
+        type: string
+  Profile1:
+    title: Profile1
+    type: object
+    properties:
+      update:
+        $ref: '#/definitions/Update'
+  Update:
+    title: Update
+    type: object
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      bio:
+        type: string
+      githubUrl:
+        type: string
+      profileUrl:
+        type: string
+  User2:
+    title: User2
+    type: object
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+        format: int32
+      cohortId:
+        type: integer
+        format: int32
+      role:
+        type: string
+      profile:
+        $ref: '#/definitions/Profile'
+  User6:
+    title: User6
+    type: object
+    properties:
+      cohortId:
+        type: integer
+        format: int64
+  User7:
+    title: User7
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      cohortId:
+        type: integer
+        format: int32
+      role:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      biography:
+        type: string
+      email:
+        type: string
+      githubUrl:
+        type: string
+      profileUrl:
+        type: string
+  User8:
+    title: User8
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+      cohortId:
+        type: integer
+        format: int32
+      role:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      biography:
+        type: string
+      githubUrl:
+        type: string
+  UsersRequest:
+    title: UsersRequest
+    type: object
+    properties:
+      cohortId:
+        type: integer
+        format: int32
+  UsersResponse:
+    title: UsersResponse
+    type: object
+    properties:
+      status:
+        type: string
+      data:
+        $ref: '#/definitions/Data16'
+security: []
+tags:
+- name: user
+- name: post
+- name: cohort
+- name: log
+- name: note
+- name: conversation
+- name: exercise
+- name: comment
+  description: ''
